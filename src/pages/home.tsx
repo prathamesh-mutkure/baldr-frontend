@@ -8,20 +8,20 @@ function HomePage() {
       <div className="flex flex-row gap-4 min-h-screen w-auto bg-black justify-start z-[1] relative">
         <div className="flex flex-col justify-between h-screen w-1/2 p-8">
           <div className="text-white flex flex-col">
-            <div className="flex flex-row justify-around items-center">
+            <div className="flex flex-row justify-between items-center">
               <Link to="#">Home</Link>
               <Link to="#">Whitepaper</Link>
               <Link to="#">Usecases</Link>
 
               <Link to="https://templofbaldr.arweave.dev/" target="_blank">
                 <button className="py-2 px-6 bg-white rounded-lg">
-                  <p className="text-black">DAPP</p>
+                  <p className="text-black font-bold">DAPP</p>
                 </button>
               </Link>
             </div>
 
             <div>
-              <h1 className="font-extrabold text-[200px] text-center font-heading">
+              <h1 className="text-[424px] leading-[424px] text-center font-heading">
                 BALDR
               </h1>
             </div>
@@ -50,6 +50,12 @@ function HomePage() {
               <Link to="#">TWITTER</Link>
               <Link to="#">INSTAGRAM</Link>
             </div>
+          </div>
+        </div>
+
+        <div className="content-center pointer-events-none z-[2] items-center flex flex-none flex-nowrap h-screen justify-center gap-2 fixed top-0 bottom-0 right-0 left-0 bg-[linear-gradient(220deg,rgba(255,255,255,0)_60.05382521119378%,hsl(0,0%,0%)_120.0062716057621%)]">
+          <div className="flex-none h-screen relative w-full z-[1]">
+            <div className="w-full h-full bg-repeat opacity-[0.15] bg-[url('/images/landing/bg-noise.png')]"></div>
           </div>
         </div>
 

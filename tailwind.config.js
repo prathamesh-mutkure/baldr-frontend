@@ -73,8 +73,8 @@ module.exports = {
         "accordion-up": "accordion-up 0.2s ease-out",
       },
       fontFamily: {
-        sans: ['"Big Shoulders Display"', defaultTheme.fontFamily.sans],
-        heading: ['"JetBrains Mono"', defaultTheme.fontFamily.mono],
+        heading: ['"Big Shoulders Text"', defaultTheme.fontFamily.sans],
+        sans: ['"JetBrains Mono"', defaultTheme.fontFamily.mono],
       },
     },
   },
