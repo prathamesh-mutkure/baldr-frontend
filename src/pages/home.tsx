@@ -21,7 +21,9 @@ function HomePage() {
             </div>
 
             <div>
-              <h1 className="font-extrabold text-[200px] text-center">BALDR</h1>
+              <h1 className="font-extrabold text-[200px] text-center font-heading">
+                BALDR
+              </h1>
             </div>
           </div>
 
