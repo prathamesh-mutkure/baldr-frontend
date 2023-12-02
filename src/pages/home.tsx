@@ -6,28 +6,28 @@ function HomePage() {
   return (
     <main>
       <div className="flex flex-row gap-4 min-h-screen w-auto bg-black justify-start z-[1] relative">
-        <div className="flex flex-col justify-between h-screen w-1/2 p-8">
+        <div className="flex flex-col justify-between h-screen w-1/2 p-12">
           <div className="text-white flex flex-col">
-            <div className="flex flex-row justify-between items-center">
+            <div className="flex flex-row justify-between items-center text-lg">
               <Link to="#">Home</Link>
               <Link to="#">Whitepaper</Link>
               <Link to="#">Usecases</Link>
 
               <Link to="https://templofbaldr.arweave.dev/" target="_blank">
-                <button className="py-2 px-6 bg-white rounded-lg">
+                <button className="py-2 px-6 bg-white rounded-xl">
                   <p className="text-black font-bold">DAPP</p>
                 </button>
               </Link>
             </div>
 
             <div>
-              <h1 className="text-[424px] leading-[424px] text-center font-heading">
+              <h1 className="text-[380px] leading-[380px] text-center font-heading">
                 BALDR
               </h1>
             </div>
           </div>
 
-          <div className="flex flex-col gap-8">
+          <div className="flex flex-col gap-5">
             {[
               "Discord Disputes",
               "Telegram Disputes",
@@ -35,18 +35,18 @@ function HomePage() {
               "Other",
             ].map((item) => (
               <Link to="#">
-                <div className="text-white font-light">{item}</div>
+                <div className="text-white font-light text-2xl">{item}</div>
               </Link>
             ))}
           </div>
 
-          <div className="flex flex-row justify-between text-white">
+          <div className="flex flex-row justify-between text-white text-lg font-light">
             <div className="flex flex-col justify-between gap-4">
               <Link to="#">baldr@conduit.work</Link>
               <Link to="#">conduit.works</Link>
             </div>
 
-            <div className="flex flex-col justify-between gap-4">
+            <div className="flex flex-col justify-between gap-4 text-right ">
               <Link to="#">TWITTER</Link>
               <Link to="#">INSTAGRAM</Link>
             </div>
