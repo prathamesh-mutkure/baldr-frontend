@@ -13,14 +13,14 @@ function HomePage() {
               <Link to="#">Whitepaper</Link>
               <Link to="#">Usecases</Link>
 
-              <Link to="https://templofbaldr.arweave.dev/" target="_blank">
+              <Link to="/dashboard/">
                 <button className="py-2 px-6 bg-white rounded-xl">
                   <p className="text-black font-bold">DAPP</p>
                 </button>
               </Link>
             </div>
 
-            <div>
+            <div className="overflow-clip">
               <h1 className="text-[380px] leading-[380px] text-center font-heading">
                 BALDR
               </h1>

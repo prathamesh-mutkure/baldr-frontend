@@ -1,7 +1,7 @@
-import { HashRouter } from "react-router-dom";
-import { Routes, Route } from "react-router-dom";
+import { HashRouter, Routes, Route } from "react-router-dom";
 
-import HomePage from "./pages/Home";
+import HomePage from "./pages/home";
+import DashboardPage from "./pages/dashboard";
 
 function App() {
   return (
@@ -9,6 +9,7 @@ function App() {
       <HashRouter>
         <Routes>
           <Route path={"/"} element={<HomePage />} />
+          <Route path={"/dashboard/"} element={<DashboardPage />} />
         </Routes>
       </HashRouter>
     </>
