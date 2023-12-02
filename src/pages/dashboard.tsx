@@ -1,56 +1,66 @@
 function DashboardPage() {
   return (
     <main className="flex bg-gray-950">
-      <div className="flex flex-col min-h-screen h-screen px-2 py-2 w-16">
+      {/* Left Bar - Server List */}
+      <div className="flex flex-col min-h-screen h-screen px-2 py-2 w-16 bg-[#1E1F22]">
         <div className="overflow-y-auto">
           <ul className="text-center">
             <li>
               <a href="#">
                 <img
-                  src="./static/icon_discord.svg"
+                  src="/vite.svg"
                   alt="discord"
                   className="w-12 h-12 rounded-full mx-auto"
                 />
               </a>
             </li>
+
+            {/* Seperator */}
             <li className="border-b border-gray-850 border-2 mx-3 mt-3"></li>
+
             <li className="mt-3">
               <a href="#">
                 <img
-                  src="./static/icon_laravel.svg"
+                  src="./vite.svg"
                   alt="laravel"
                   className="w-12 h-12 rounded-full mx-auto"
                 />
               </a>
             </li>
+
+            {/* Left White Bar */}
             <span
               style={{
                 position: "absolute",
                 top: "142px",
                 left: "-10px",
               }}
-              className="border-r-4 rounded-2xl border-gray-300 text-gray-300 py-3 "
+              className="border-r-4 rounded-2xl border-gray-300 text-gray-300 py-3"
             >
               0
             </span>
+
             <li className="mt-3">
               <a href="#">
                 <img
-                  src="./static/icon_tailwind.svg"
+                  src="./vite.svg"
                   alt="tailwind"
                   className="w-12 h-12 rounded-2xl mx-auto"
                 />
               </a>
             </li>
+
             <li className="mt-3">
               <a href="#">
                 <img
-                  src="./static/icon_vue.svg"
+                  src="./vite.svg"
                   alt="vue"
                   className="w-12 h-12 rounded-full mx-auto"
                 />
               </a>
             </li>
+
+            {/* Plus Icon */}
             <li className="mt-3">
               <a
                 href="#"
@@ -70,6 +80,8 @@ function DashboardPage() {
                 </svg>
               </a>
             </li>
+
+            {/* Navigate Icon */}
             <li className="mt-2">
               <a
                 href="#"
@@ -89,7 +101,11 @@ function DashboardPage() {
                 </svg>
               </a>
             </li>
+
+            {/* Separator */}
             <li className="border-b border-gray-800 border-2 mx-3 mt-3"></li>
+
+            {/* Download Icon */}
             <li className="mt-3">
               <a
                 href="#"
@@ -113,8 +129,12 @@ function DashboardPage() {
           </ul>
         </div>
       </div>
+
+      {/* Right Area */}
       <div className="flex flex-1 flex-col min-h-screen h-screen">
-        <div className="flex text-white h-12">
+        {/* Top Bar */}
+        <div className="flex text-white h-12 bg-[#303338]">
+          {/* Top Bar Left */}
           <div
             className="bg-gray-875 w-56 flex-none flex items-center justify-between px-3 py-2 border-b border-gray-900"
             style={{
@@ -136,7 +156,10 @@ function DashboardPage() {
               </svg>
             </button>
           </div>
-          <div className="flex-1 bg-gray-775 flex items-center justify-between border-b border-gray-900 px-4">
+
+          {/* Top Bar Right */}
+          <div className="flex-1 bg-gray-775 flex items-center justify-between border-b border-gray-900 px-4 ">
+            {/* Left Items */}
             <div className="flex items-center">
               <div className="text-gray-500 text-2xl">#</div>
               <div className="ml-2 text-sm text-white">general</div>
@@ -146,6 +169,8 @@ function DashboardPage() {
                 </div>
               </a>
             </div>
+
+            {/* Right Items */}
             <div className="flex items-center">
               <a href="#" className="ml-4">
                 <svg
@@ -158,6 +183,7 @@ function DashboardPage() {
                   <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"></path>
                 </svg>
               </a>
+
               <a href="#" className="ml-4">
                 <svg
                   className="w-6 h-6 text-gray-300 hover:text-gray-200"
@@ -243,8 +269,16 @@ function DashboardPage() {
             </div>
           </div>
         </div>
+
         <div className="flex-1 flex overflow-y-hidden">
-          <div className="bg-gray-875 w-56 flex-none flex flex-col justify-between">
+          {/* Left Channel List */}
+          <div
+            className="bg-gray-875 w-56 flex-none flex flex-col justify-between bg-[#303338]"
+            style={{
+              borderRight: 1,
+            }}
+          >
+            {/* Channel names */}
             <div className="overflow-y-auto text-sm">
               <ul className="px-2 py-3">
                 <li className="text-gray-500 px-2 hover:text-gray-200 hover:bg-gray-875 rounded">
@@ -259,6 +293,7 @@ function DashboardPage() {
                     <span className="ml-2">faq</span>
                   </a>
                 </li>
+
                 <button className="flex items-center text-gray-500 hover:text-gray-200">
                   <svg
                     fill="currentColor"
@@ -275,6 +310,7 @@ function DashboardPage() {
                     TAILWIND STUFF
                   </h3>
                 </button>
+
                 <li className="text-gray-200 px-2 bg-gray-725 rounded">
                   <a href="#" className="flex items-center">
                     <span className="text-xl">#</span>
@@ -289,11 +325,13 @@ function DashboardPage() {
                 </li>
               </ul>
             </div>
+
+            {/* Username and GC */}
             <div className="bg-gray-925 py-2 px-2 flex items-center justify-between">
               <div className="flex items-center">
                 <a href="#">
                   <img
-                    src="./static/icon_placeholder_avatar.svg"
+                    src="./vite.svg"
                     alt="avatar"
                     className="w-8 h-8 rounded-full"
                   />
@@ -345,14 +383,18 @@ function DashboardPage() {
               </div>
             </div>
           </div>
-          <div className="bg-gray-775 flex-1 flex justify-between">
+
+          {/* Right Message Area */}
+          <div className="bg-gray-775 flex-1 flex justify-between bg-[#303338] border-l-gray-300">
             <div className="flex-1 flex flex-col justify-between">
+              {/* Message list */}
               <div className="chat text-sm text-gray-400 overflow-y-auto">
+                {/* TODO: Extract into component */}
                 <div className="flex ml-6 my-3 py-4 border-t border-gray-700">
                   <div className="flex-none">
                     <a href="#">
                       <img
-                        src="./static/icon_placeholder_avatar.svg"
+                        src="./vite.svg"
                         alt="avatar"
                         className="w-12 h-12 rounded-full"
                       />
@@ -373,11 +415,12 @@ function DashboardPage() {
                     </div>
                   </div>
                 </div>
+
                 <div className="flex ml-6 my-3 py-4 border-t border-gray-700">
                   <div className="flex-none">
                     <a href="#">
                       <img
-                        src="./static/icon_placeholder_avatar.svg"
+                        src="./vite.svg"
                         alt="avatar"
                         className="w-12 h-12 rounded-full"
                       />
@@ -399,7 +442,10 @@ function DashboardPage() {
                   </div>
                 </div>
               </div>
+
+              {/* Bottom Bar */}
               <div className="bg-gray-775 h-24 flex items-center mx-3">
+                {/* Plus Icon */}
                 <button className="px-2 py-2 h-10 bg-gray-725 rounded-l text-gray-400 hover:text-white">
                   <svg className="w-6 h-6" viewBox="0 0 24 24">
                     <path
@@ -408,12 +454,17 @@ function DashboardPage() {
                     ></path>
                   </svg>
                 </button>
+
+                {/* Search */}
                 <div className="flex-1">
                   <input
                     type="text"
-                    className="w-full text-sm h-10 px-2 py-2 bg-gray-725 text-gray-200 focus:outline-none"
+                    className="w-full text-sm h-10 px-2 py-2 bg-[#373A3F] text-gray-200 focus:outline-none rounded-lg"
+                    placeholder="Search username"
                   />
                 </div>
+
+                {/* Right Icons */}
                 <div className="px-2 py-2 bg-gray-725 rounded-r flex items-center justify-between h-10">
                   <button className="h-10 mr-2 bg-gray-725 rounded-l text-gray-300 hover:text-white">
                     <svg width="24" height="24" viewBox="0 0 24 24">
@@ -435,10 +486,8 @@ function DashboardPage() {
                   </button>
                   <button className="h-10 mr-2 bg-gray-725 rounded-l text-gray-500 hover:text-white">
                     <div
-                      //   src="./static/icon_discord_emojis.png"
                       style={{
-                        backgroundImage:
-                          "url('./static/icon_discord_emojis.png')",
+                        backgroundImage: "url('./vite.svg')",
                         filter: "grayscale(100%)",
                         backgroundPosition: "0px 0px",
                         backgroundSize: "242px 110px",
@@ -453,7 +502,18 @@ function DashboardPage() {
                 </div>
               </div>
             </div>
-            <div className="bg-gray-875 w-56 flex-none px-3 py-3 overflow-y-auto">
+          </div>
+        </div>
+      </div>
+    </main>
+  );
+}
+
+export default DashboardPage;
+
+{
+  // Online Section
+  /* <div className="bg-gray-875 w-56 flex-none px-3 py-3 overflow-y-auto">
               <h3 className="uppercase tracking-wide font-semibold text-xs text-gray-500 mb-2">
                 Online - 1
               </h3>
@@ -469,12 +529,5 @@ function DashboardPage() {
                   </a>
                 </li>
               </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-    </main>
-  );
+            </div> */
 }
-
-export default DashboardPage;
