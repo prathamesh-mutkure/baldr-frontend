@@ -2,6 +2,7 @@ import { HashRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "@/components/theme-provider";
 import HomePage from "./pages/home";
 import DashboardPage from "./pages/dashboard";
+import DiscordDashboardPage from "./pages/_dashboard";
 
 function App() {
   return (
@@ -10,6 +11,7 @@ function App() {
         <Routes>
           <Route path={"/"} element={<HomePage />} />
           <Route path={"/dashboard/"} element={<DashboardPage />} />
+          <Route path={"/discord/"} element={<DiscordDashboardPage />} />
         </Routes>
       </HashRouter>
     </ThemeProvider>
