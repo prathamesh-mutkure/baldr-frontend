@@ -40,13 +40,15 @@ function MessageTile({
   img,
   name,
   content,
+  blur = false,
 }: {
   img: string;
   name: string;
   content: string;
+  blur?: boolean;
 }) {
   return (
-    <div className="flex items-center">
+    <div className={cn("flex items-center", blur && "blur-sm")}>
       <Avatar className="flex h-9 w-9 items-center justify-center space-y-0 border">
         <AvatarImage src={img} alt="Avatar" />
         <AvatarFallback>XX</AvatarFallback>
@@ -128,13 +130,13 @@ function DashboardPage() {
       <div className="flex flex-col justify-between h-full w-full p-4">
         <h1 className="text-4xl font-bold">Baldr</h1>
 
-        <div className="flex flex-col flex-grow gap-8 mt-16 w-4/5 mx-auto">
+        <div className="flex flex-col flex-grow gap-8 mt-16 w-3/5 mx-auto">
           {messages.map((message) => (
             <MessageTile {...message} />
           ))}
         </div>
 
-        <div className="w-4/5 mx-auto pt-8">
+        <div className="w-3/5 mx-auto pt-8">
           <p className="h-10 w-full rounded-md border border-muted-foreground bg-transparent px-3 py-2 text-sm ring-offset-background text-muted-foreground">
             Hello, I'm under the water, please help.
           </p>
