@@ -1,10 +1,39 @@
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { useRef } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
+type APIData = {
+  tnxs: Record<string, string[]>;
+  publicFunctions: {
+    store: string[];
+  };
+};
+
 function SearchPage() {
-  const inputRef = useRef(null);
+  const [usernames, setUsernames] = useState<string[]>([]);
+  const [username, setUsername] = useState<string>();
+
+  useEffect(() => {
+    async function getData() {
+      const resp = await fetch(
+        "https://api.mem.tech/api/state/v_RDVpHFBIDpX1owrBXc59Z1-5O0BmNj8zPNwtNItnY"
+      );
+
+      const data = (await resp.json()) as APIData;
+
+      setUsernames(Object.keys(data.tnxs));
+    }
+
+    getData();
+  }, []);
 
   return (
     <div className="h-screen w-screen flex items-center flex-col py-12">
@@ -14,9 +43,24 @@ function SearchPage() {
         <h1 className="text-7xl text-center">Temple of Baldr</h1>
 
         <div className="w-1/2 mx-auto flex flex-col gap-8">
-          <Input placeholder="Search by username" ref={inputRef} />
+          <Select value={username} onValueChange={setUsername}>
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="Search Username" />
+            </SelectTrigger>
 
-          <Link to="/dashboard" className="w-full">
+            <SelectContent className="w-full">
+              {usernames.map((item, i) => (
+                <SelectItem key={i} value={item}>
+                  {item}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
+          <Link
+            to={username ? `/dashboard/?username=${username}` : "/dashboard"}
+            className="w-full"
+          >
             <Button className="w-full">Continue</Button>
           </Link>
         </div>
