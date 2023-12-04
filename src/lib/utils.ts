@@ -1,4 +1,4 @@
-import { MemAPIData } from "@/types";
+import { MemAPIData, TxnData } from "@/types";
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 
@@ -10,25 +10,25 @@ export function isContentPrivate(text: string): boolean {
   return text.startsWith("0-0");
 }
 
-export function getContentInfo(text: string): {
-  prefix: "0-0" | "";
-  content: string;
-  key: "" | string;
+export function expandTxnData(data: TxnData): TxnData & {
+  key: string | null;
+  isPrivate: boolean;
 } {
-  const isPrivate = isContentPrivate(text);
+  const isPrivate = isContentPrivate(data.content);
 
   if (!isPrivate)
     return {
-      prefix: "",
-      key: "",
-      content: text,
+      ...data,
+      isPrivate: false,
+      key: null,
     };
 
-  const [str, key] = text.split("+");
+  const [str, key] = data.content.split("+");
 
   return {
-    prefix: "0-0",
+    ...data,
     content: str.slice(3),
+    isPrivate: true,
     key,
   };
 }

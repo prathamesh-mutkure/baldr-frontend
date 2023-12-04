@@ -1,9 +1,10 @@
 import { Icons } from "@/components/icons";
-import { cn, getMemData } from "@/lib/utils";
+import { cn, expandTxnData, getMemData } from "@/lib/utils";
 import { Link, useSearchParams } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useEffect, useState } from "react";
 import { TxnData } from "@/types";
+import { Button } from "@/components/ui/button";
 
 function NavItems({
   title,
@@ -44,26 +45,18 @@ function NavItems({
   );
 }
 
-function MessageTile({
-  img,
-  name,
-  content,
-  blur = false,
-}: {
-  img: string;
-  name: string;
-  content: string;
-  blur?: boolean;
-}) {
+function MessageTile({ img, txnData }: { img: string; txnData: TxnData }) {
+  const data = expandTxnData(txnData);
+
   return (
-    <div className={cn("flex items-center", blur && "blur-sm")}>
+    <div className={cn("flex items-center", data.isPrivate && "blur-sm")}>
       <Avatar className="flex h-9 w-9 items-center justify-center space-y-0 border">
         <AvatarImage src={img} alt="Avatar" />
         <AvatarFallback>XX</AvatarFallback>
       </Avatar>
       <div className="ml-4 space-y-1">
-        <p className="text-sm font-medium leading-none">{name}</p>
-        <p className="text-sm text-muted-foreground">{content ?? "-"}</p>
+        <p className="text-sm font-medium leading-none">{data.username}</p>
+        <p className={cn("text-sm text-muted-foreground")}>{data.content}</p>
       </div>
     </div>
   );
@@ -76,10 +69,15 @@ function DashboardPage() {
   const [activeTxn, setActiveTxn] = useState<string | null>(null);
   const [activeTxnData, setActiveTxnData] = useState<TxnData[] | null>(null);
 
+  const [privateTxnData, setPrivateTxnData] = useState<{
+    isPrivate: boolean;
+    key: string | null;
+  } | null>(null);
+
+  const username = params.get("username");
+
   useEffect(() => {
     async function getData() {
-      const username = params.get("username");
-
       if (!username) return;
 
       const data = await getMemData();
@@ -89,7 +87,7 @@ function DashboardPage() {
     }
 
     getData();
-  }, [params]);
+  }, [username]);
 
   useEffect(() => {
     async function getTnxData(txn: string): Promise<TxnData[]> {
@@ -97,6 +95,15 @@ function DashboardPage() {
       const data = (await resp.json()) as TxnData[];
 
       setActiveTxnData(data);
+
+      if (data[0]) {
+        const pvtData = expandTxnData(data[0]);
+
+        setPrivateTxnData({
+          key: pvtData.key,
+          isPrivate: pvtData.isPrivate,
+        });
+      }
 
       return data;
     }
@@ -152,15 +159,26 @@ function DashboardPage() {
       <div className="flex flex-col justify-between h-full w-full p-4">
         <h1 className="text-4xl font-bold">Baldr</h1>
 
-        <div className="flex flex-col flex-grow gap-8 mt-16 w-3/5 mx-auto">
-          {activeTxnData?.map((txnData, i) => (
-            <MessageTile
-              key={i}
-              img="/vite.svg"
-              name={txnData.username}
-              content={txnData.content}
-            />
-          ))}
+        <div className="relative flex-grow w-3/5 mx-auto mt-16">
+          <div
+            className={cn(
+              "flex flex-col flex-grow gap-8",
+              privateTxnData?.isPrivate
+            )}
+          >
+            {activeTxnData?.map((txnData, i) => (
+              <MessageTile key={i} img="/vite.svg" txnData={txnData} />
+            ))}
+          </div>
+
+          {privateTxnData?.isPrivate && (
+            <Button
+              variant="outline"
+              className="absolute m-auto left-0 right-0 top-0 bottom-0 w-min blur-0 z-1"
+            >
+              View Data
+            </Button>
+          )}
         </div>
 
         <div className="w-3/5 mx-auto pt-8">
