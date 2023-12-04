@@ -9,13 +9,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-
-type APIData = {
-  tnxs: Record<string, string[]>;
-  publicFunctions: {
-    store: string[];
-  };
-};
+import { getMemData } from "@/lib/utils";
 
 function SearchPage() {
   const [usernames, setUsernames] = useState<string[]>([]);
@@ -23,11 +17,7 @@ function SearchPage() {
 
   useEffect(() => {
     async function getData() {
-      const resp = await fetch(
-        "https://api.mem.tech/api/state/v_RDVpHFBIDpX1owrBXc59Z1-5O0BmNj8zPNwtNItnY"
-      );
-
-      const data = (await resp.json()) as APIData;
+      const data = await getMemData();
 
       setUsernames(Object.keys(data.tnxs));
     }

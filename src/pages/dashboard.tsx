@@ -1,7 +1,8 @@
 import { Icons } from "@/components/icons";
-import { cn } from "@/lib/utils";
+import { cn, getMemData } from "@/lib/utils";
 import { Link } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useEffect, useState } from "react";
 
 function NavItems({
   title,
@@ -61,36 +62,49 @@ function MessageTile({
   );
 }
 
-function DashboardPage() {
-  const items = [
-    {
-      title: "Hello",
-    },
-    {
-      title: "Hola",
-    },
-    {
-      title: "Nameste",
-    },
-  ];
+const items = [
+  {
+    title: "Hello",
+  },
+  {
+    title: "Hola",
+  },
+  {
+    title: "Nameste",
+  },
+];
 
-  const messages = [
-    {
-      img: "/vite.svg",
-      name: "spyderweb",
-      content: "Test Message",
-    },
-    {
-      img: "/vite.svg",
-      name: "spyderweb",
-      content: "Test Message",
-    },
-    {
-      img: "/vite.svg",
-      name: "spyderweb",
-      content: "Test Message",
-    },
-  ];
+const messages = [
+  {
+    img: "/vite.svg",
+    name: "spyderweb",
+    content: "Test Message",
+  },
+  {
+    img: "/vite.svg",
+    name: "spyderweb",
+    content: "Test Message",
+  },
+  {
+    img: "/vite.svg",
+    name: "spyderweb",
+    content: "Test Message",
+  },
+];
+
+function DashboardPage() {
+  const [usernames, setUsernames] = useState<string[]>([]);
+  const [username, setUsername] = useState<string>();
+
+  useEffect(() => {
+    async function getData() {
+      const data = await getMemData();
+
+      setUsernames(Object.keys(data.tnxs));
+    }
+
+    getData();
+  }, []);
 
   return (
     <div className="flex bg-[#343541] h-screen">
