@@ -1,15 +1,20 @@
 import { Icons } from "@/components/icons";
 import { cn, getMemData } from "@/lib/utils";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useEffect, useState } from "react";
+import { TxnData } from "@/types";
 
 function NavItems({
   title,
   items,
+  activeTxn = null,
+  onClick,
 }: {
   title: string;
   items: { title: string }[];
+  activeTxn?: string | null;
+  onClick: (val: string) => void;
 }) {
   return (
     <div>
@@ -17,22 +22,24 @@ function NavItems({
         {title}
       </h3>
 
-      {items.map((item, index) => {
-        return (
-          <Link key={index} to={"/"}>
-            <span
-              className={cn(
-                "group flex items-center justify-between rounded-md px-3 py-2 text-sm font-medium hover:bg-[#202122] hover:text-accent-foreground"
-                // path === item.href ? "bg-accent" : "transparent",
-                // item.disabled && "cursor-not-allowed opacity-80"
-              )}
-            >
-              <span>{item.title}</span>
-              <Icons.lock className="mr-2 h-4 w-4" />
-            </span>
-          </Link>
-        );
-      })}
+      <div className="flex flex-col gap-1">
+        {items.map((item, index) => {
+          return (
+            <div onClick={() => onClick(item.title)} key={index}>
+              <span
+                className={cn(
+                  "group flex items-center justify-between rounded-md px-3 py-2 text-sm font-medium hover:bg-[#202122] hover:text-accent-foreground",
+                  activeTxn === item.title ? "bg-accent" : "transparent"
+                )}
+              >
+                <span className="break-all w-[90%] truncate">{item.title}</span>
+
+                <Icons.lock className="mr-2 h-4 w-4" />
+              </span>
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }
@@ -56,55 +63,50 @@ function MessageTile({
       </Avatar>
       <div className="ml-4 space-y-1">
         <p className="text-sm font-medium leading-none">{name}</p>
-        <p className="text-sm text-muted-foreground">{content}</p>
+        <p className="text-sm text-muted-foreground">{content ?? "-"}</p>
       </div>
     </div>
   );
 }
 
-const items = [
-  {
-    title: "Hello",
-  },
-  {
-    title: "Hola",
-  },
-  {
-    title: "Nameste",
-  },
-];
-
-const messages = [
-  {
-    img: "/vite.svg",
-    name: "spyderweb",
-    content: "Test Message",
-  },
-  {
-    img: "/vite.svg",
-    name: "spyderweb",
-    content: "Test Message",
-  },
-  {
-    img: "/vite.svg",
-    name: "spyderweb",
-    content: "Test Message",
-  },
-];
-
 function DashboardPage() {
-  const [usernames, setUsernames] = useState<string[]>([]);
-  const [username, setUsername] = useState<string>();
+  const [params] = useSearchParams();
+
+  const [txns, setTxns] = useState<string[]>([]);
+  const [activeTxn, setActiveTxn] = useState<string | null>(null);
+  const [activeTxnData, setActiveTxnData] = useState<TxnData[] | null>(null);
 
   useEffect(() => {
     async function getData() {
+      const username = params.get("username");
+
+      if (!username) return;
+
       const data = await getMemData();
 
-      setUsernames(Object.keys(data.tnxs));
+      setTxns(data.tnxs[username] ?? []);
+      setActiveTxn(data.tnxs[username][0] ?? null);
     }
 
     getData();
-  }, []);
+  }, [params]);
+
+  useEffect(() => {
+    async function getTnxData(txn: string): Promise<TxnData[]> {
+      const resp = await fetch(`https://arweave.net/${txn}`);
+      const data = (await resp.json()) as TxnData[];
+
+      setActiveTxnData(data);
+
+      return data;
+    }
+
+    if (!activeTxn) {
+      return;
+    }
+
+    getTnxData(activeTxn);
+  }, [activeTxn]);
 
   return (
     <div className="flex bg-[#343541] h-screen">
@@ -120,8 +122,14 @@ function DashboardPage() {
               </Link>
             </div>
 
-            <NavItems title="Previous 7 Days" items={items} />
-            <NavItems title="Previous 14 Days" items={items} />
+            <NavItems
+              title="Transaction IDs"
+              items={txns.map((txn) => ({
+                title: txn,
+              }))}
+              onClick={setActiveTxn}
+              activeTxn={activeTxn}
+            />
           </div>
 
           <div>
@@ -145,14 +153,29 @@ function DashboardPage() {
         <h1 className="text-4xl font-bold">Baldr</h1>
 
         <div className="flex flex-col flex-grow gap-8 mt-16 w-3/5 mx-auto">
-          {messages.map((message) => (
-            <MessageTile {...message} />
+          {activeTxnData?.map((txnData, i) => (
+            <MessageTile
+              key={i}
+              img="/vite.svg"
+              name={txnData.username}
+              content={txnData.content}
+            />
           ))}
         </div>
 
         <div className="w-3/5 mx-auto pt-8">
           <p className="h-10 w-full rounded-md border border-muted-foreground bg-transparent px-3 py-2 text-sm ring-offset-background text-muted-foreground">
-            Hello, I'm under the water, please help.
+            {activeTxn ? (
+              <Link
+                to={`https://arweave.net/${activeTxn}`}
+                className="underline"
+                target="_blank"
+              >
+                {activeTxn}
+              </Link>
+            ) : (
+              "Transaction ID's block explorer link will appear here"
+            )}
           </p>
         </div>
       </div>
