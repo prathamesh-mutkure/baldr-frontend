@@ -2,7 +2,7 @@ import { Icons } from "@/components/icons";
 import { cn, expandTxnData, getMemData } from "@/lib/utils";
 import { Link, useSearchParams } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Ref, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { TxnData } from "@/types";
 import { Button } from "@/components/ui/button";
 import {
@@ -87,7 +87,7 @@ function MessageTile({
 }
 
 function DashboardPage() {
-  const [params] = useSearchParams();
+  const [params, setParams] = useSearchParams();
   const { toast } = useToast();
 
   const [txns, setTxns] = useState<string[]>([]);
@@ -104,6 +104,7 @@ function DashboardPage() {
   const closeBtnRef = useRef<HTMLButtonElement>(null);
 
   const username = params.get("username");
+  const txId = params.get("txId");
 
   useEffect(() => {
     async function getData() {
@@ -111,11 +112,13 @@ function DashboardPage() {
 
       const data = await getMemData();
 
-      setTxns(data.tnxs[username] ?? []);
+      setTxns(data.tnxs[username]?.reverse() ?? []);
       setActiveTxn(data.tnxs[username][0] ?? null);
     }
 
     getData();
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [username]);
 
   useEffect(() => {
@@ -141,9 +144,17 @@ function DashboardPage() {
       return;
     }
 
+    setParams((oldParams) => {
+      oldParams.set("txId", activeTxn);
+
+      return new URLSearchParams(oldParams);
+    });
+
     getTnxData(activeTxn);
     setDataDecrpyted(false);
     setPrivateTxnData(null);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTxn]);
 
   function handleViewData() {
@@ -212,7 +223,10 @@ function DashboardPage() {
         </div>
 
         <div className="flex flex-col justify-between h-full w-full p-4">
-          <h1 className="text-4xl font-bold">Baldr</h1>
+          <div className="flex flex-row justify-between px-8">
+            <h1 className="text-4xl font-bold">Baldr</h1>
+            <Button>Generate PDF</Button>
+          </div>
 
           <div className="relative flex-grow w-3/5 mx-auto mt-16">
             <div
@@ -235,9 +249,12 @@ function DashboardPage() {
               <DialogTrigger asChild>
                 <Button
                   variant="outline"
-                  className="absolute m-auto left-0 right-0 top-0 bottom-0 w-min blur-0"
+                  className="absolute m-auto left-0 right-0 top-0 bottom-0 w-min blur-0 flex gap-2"
                 >
-                  View Data
+                  <span>
+                    <Icons.lock className="h-4 w-4" />
+                  </span>
+                  <span>Unlock Data</span>
                 </Button>
               </DialogTrigger>
             )}
@@ -279,6 +296,7 @@ function DashboardPage() {
               placeholder="Enter encryption key"
               className="col-span-3"
               ref={keyInputRef}
+              type="password"
             />
           </div>
         </div>

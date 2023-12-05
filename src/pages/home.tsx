@@ -13,7 +13,7 @@ function HomePage() {
               <Link to="#">Whitepaper</Link>
               <Link to="#">Usecases</Link>
 
-              <Link to="/dashboard/">
+              <Link to="/search/">
                 <button className="py-2 px-6 bg-white rounded-xl">
                   <p className="text-black font-bold">DAPP</p>
                 </button>
