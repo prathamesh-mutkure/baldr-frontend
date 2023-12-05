@@ -2,9 +2,23 @@ import { Icons } from "@/components/icons";
 import { cn, expandTxnData, getMemData } from "@/lib/utils";
 import { Link, useSearchParams } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { useEffect, useState } from "react";
+import { Ref, useEffect, useRef, useState } from "react";
 import { TxnData } from "@/types";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { useToast } from "@/components/ui/use-toast";
 
 function NavItems({
   title,
@@ -64,6 +78,7 @@ function MessageTile({ img, txnData }: { img: string; txnData: TxnData }) {
 
 function DashboardPage() {
   const [params] = useSearchParams();
+  const { toast } = useToast();
 
   const [txns, setTxns] = useState<string[]>([]);
   const [activeTxn, setActiveTxn] = useState<string | null>(null);
@@ -73,6 +88,9 @@ function DashboardPage() {
     isPrivate: boolean;
     key: string | null;
   } | null>(null);
+
+  const keyInputRef = useRef<HTMLInputElement>(null);
+  const closeBtnRef = useRef<HTMLButtonElement>(null);
 
   const username = params.get("username");
 
@@ -115,89 +133,150 @@ function DashboardPage() {
     getTnxData(activeTxn);
   }, [activeTxn]);
 
+  function handleViewData() {
+    const userKey = keyInputRef.current?.value;
+
+    if (userKey === privateTxnData?.key) {
+      toast({
+        title: "Success",
+        description: "The key matched, decrypting data...",
+        type: "foreground",
+        variant: "default",
+      });
+
+      closeBtnRef.current?.click();
+    } else {
+      toast({
+        title: "Failed to decrypt",
+        description: "The key did not match",
+        type: "foreground",
+        variant: "destructive",
+      });
+    }
+  }
+
   return (
-    <div className="flex bg-[#343541] h-screen">
-      <div className="w-[400px] bg-[#000000] h-full">
-        <nav className="p-4 h-full flex flex-col">
-          <div className="flex flex-col flex-1 gap-2 gap-y-6 overflow-auto">
+    <Dialog>
+      <div className="flex bg-[#343541] h-screen">
+        <div className="w-[400px] bg-[#000000] h-full">
+          <nav className="p-4 h-full flex flex-col">
+            <div className="flex flex-col flex-1 gap-2 gap-y-6 overflow-auto">
+              <div>
+                <Link to={"/"}>
+                  <span className="group flex items-center rounded-md px-3 py-2 text-sm font-medium hover:bg-[#202122] hover:text-accent-foreground">
+                    <Icons.dashboard className="mr-2 h-6 w-6" />
+                    <span>Transaction IDs</span>
+                  </span>
+                </Link>
+              </div>
+
+              <NavItems
+                title="Transaction IDs"
+                items={txns.map((txn) => ({
+                  title: txn,
+                }))}
+                onClick={setActiveTxn}
+                activeTxn={activeTxn}
+              />
+            </div>
+
             <div>
               <Link to={"/"}>
-                <span className="group flex items-center rounded-md px-3 py-2 text-sm font-medium hover:bg-[#202122] hover:text-accent-foreground">
-                  <Icons.dashboard className="mr-2 h-6 w-6" />
+                <span className="group flex items-center rounded-md px-3 py-2 gap-4 text-sm font-medium hover:bg-[#202122] hover:text-accent-foreground">
+                  {/* <Icons.dashboard className="mr-2 h-6 w-6" /> */}
+
+                  <Avatar className="flex h-8 w-8 items-center justify-center space-y-0 border">
+                    <AvatarImage src="/vite.svg" alt="Avatar" />
+                    <AvatarFallback>XX</AvatarFallback>
+                  </Avatar>
+
                   <span>Transaction IDs</span>
                 </span>
               </Link>
             </div>
+          </nav>
+        </div>
 
-            <NavItems
-              title="Transaction IDs"
-              items={txns.map((txn) => ({
-                title: txn,
-              }))}
-              onClick={setActiveTxn}
-              activeTxn={activeTxn}
+        <div className="flex flex-col justify-between h-full w-full p-4">
+          <h1 className="text-4xl font-bold">Baldr</h1>
+
+          <div className="relative flex-grow w-3/5 mx-auto mt-16">
+            <div
+              className={cn(
+                "flex flex-col flex-grow gap-8",
+                privateTxnData?.isPrivate && "blur-sm"
+              )}
+            >
+              {activeTxnData?.map((txnData, i) => (
+                <MessageTile key={i} img="/vite.svg" txnData={txnData} />
+              ))}
+            </div>
+
+            {privateTxnData?.isPrivate && (
+              <DialogTrigger asChild>
+                <Button
+                  variant="outline"
+                  className="absolute m-auto left-0 right-0 top-0 bottom-0 w-min blur-0"
+                >
+                  View Data
+                </Button>
+              </DialogTrigger>
+            )}
+          </div>
+
+          <div className="w-3/5 mx-auto pt-8">
+            <p className="h-10 w-full rounded-md border border-muted-foreground bg-transparent px-3 py-2 text-sm ring-offset-background text-muted-foreground">
+              {activeTxn ? (
+                <Link
+                  to={`https://arweave.net/${activeTxn}`}
+                  className="underline"
+                  target="_blank"
+                >
+                  {activeTxn}
+                </Link>
+              ) : (
+                "Transaction ID's block explorer link will appear here"
+              )}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <DialogContent className="sm:max-w-[425px]">
+        <DialogHeader>
+          <DialogTitle>Private Data</DialogTitle>
+          <DialogDescription>
+            Enter the private key used to encrypt the data in Baldr Agent
+          </DialogDescription>
+        </DialogHeader>
+
+        <div className="grid gap-4 py-4">
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="name" className="text-right">
+              Key
+            </Label>
+            <Input
+              id="key"
+              placeholder="Enter encryption key"
+              className="col-span-3"
+              ref={keyInputRef}
             />
           </div>
+        </div>
 
-          <div>
-            <Link to={"/"}>
-              <span className="group flex items-center rounded-md px-3 py-2 gap-4 text-sm font-medium hover:bg-[#202122] hover:text-accent-foreground">
-                {/* <Icons.dashboard className="mr-2 h-6 w-6" /> */}
+        <DialogFooter>
+          <Button type="button" onClick={handleViewData}>
+            View Data
+          </Button>
 
-                <Avatar className="flex h-8 w-8 items-center justify-center space-y-0 border">
-                  <AvatarImage src="/vite.svg" alt="Avatar" />
-                  <AvatarFallback>XX</AvatarFallback>
-                </Avatar>
-
-                <span>Transaction IDs</span>
-              </span>
-            </Link>
-          </div>
-        </nav>
-      </div>
-
-      <div className="flex flex-col justify-between h-full w-full p-4">
-        <h1 className="text-4xl font-bold">Baldr</h1>
-
-        <div className="relative flex-grow w-3/5 mx-auto mt-16">
-          <div
-            className={cn(
-              "flex flex-col flex-grow gap-8",
-              privateTxnData?.isPrivate
-            )}
-          >
-            {activeTxnData?.map((txnData, i) => (
-              <MessageTile key={i} img="/vite.svg" txnData={txnData} />
-            ))}
-          </div>
-
-          {privateTxnData?.isPrivate && (
-            <Button
-              variant="outline"
-              className="absolute m-auto left-0 right-0 top-0 bottom-0 w-min blur-0 z-1"
-            >
-              View Data
+          <DialogClose asChild>
+            <Button type="button" variant="secondary" ref={closeBtnRef}>
+              Close
             </Button>
-          )}
-        </div>
-
-        <div className="w-3/5 mx-auto pt-8">
-          <p className="h-10 w-full rounded-md border border-muted-foreground bg-transparent px-3 py-2 text-sm ring-offset-background text-muted-foreground">
-            {activeTxn ? (
-              <Link
-                to={`https://arweave.net/${activeTxn}`}
-                className="underline"
-                target="_blank"
-              >
-                {activeTxn}
-              </Link>
-            ) : (
-              "Transaction ID's block explorer link will appear here"
-            )}
-          </p>
-        </div>
-      </div>
-    </div>
+          </DialogClose>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }
 

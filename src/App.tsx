@@ -4,6 +4,7 @@ import HomePage from "./pages/home";
 import DashboardPage from "./pages/dashboard";
 import DiscordDashboardPage from "./pages/_dashboard";
 import SearchPage from "./pages/search";
+import { Toaster } from "@/components/ui/toaster";
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
           <Route path={"/discord/"} element={<DiscordDashboardPage />} />
           <Route path={"/search/"} element={<SearchPage />} />
         </Routes>
+        <Toaster />
       </HashRouter>
     </ThemeProvider>
   );
