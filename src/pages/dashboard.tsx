@@ -202,16 +202,16 @@ function DashboardPage() {
           <nav className="p-4 h-full flex flex-col">
             <div className="flex flex-col flex-1 gap-2 gap-y-6 overflow-auto">
               <div>
-                <Link to={"/"}>
+                <Link to={"/search"}>
                   <span className="group flex items-center rounded-md px-3 py-2 text-sm font-medium hover:bg-[#202122] hover:text-accent-foreground">
-                    <Icons.dashboard className="mr-2 h-6 w-6" />
-                    <span>Transaction IDs</span>
+                    <Icons.arrowLeft className="mr-2 h-6 w-6" />
+                    <span>Search</span>
                   </span>
                 </Link>
               </div>
 
               <NavItems
-                title="Transaction IDs"
+                title="Recent Transactions"
                 items={txns.map((txn) => ({
                   title: txn,
                 }))}
@@ -237,7 +237,9 @@ function DashboardPage() {
                     <AvatarFallback>XX</AvatarFallback>
                   </Avatar>
 
-                  <span>Transaction IDs</span>
+                  <span className="font-bold text-xl text-lime-400">
+                    {username}
+                  </span>
                 </span>
               </Link>
             </div>
@@ -249,7 +251,23 @@ function DashboardPage() {
             <h1 className="text-3xl print:text-black print:text-7xl font-bold print:text-center">
               Baldr
             </h1>
-            <Button onClick={() => window.print()} className="print:hidden">
+            <Button
+              onClick={() => {
+                if (privateTxnData?.isPrivate && !dataDecrpyted) {
+                  toast({
+                    variant: "destructive",
+                    type: "background",
+                    title: "Data not decrypted",
+                    description: "Please unlock data before printing it",
+                  });
+
+                  return;
+                }
+
+                window.print();
+              }}
+              className="print:hidden"
+            >
               Generate PDF
             </Button>
           </header>
