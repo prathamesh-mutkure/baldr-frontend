@@ -1,6 +1,9 @@
 import { Icons } from "@/components/icons";
 import { cn, expandTxnData, getMemData } from "@/lib/utils";
 import { Link, useSearchParams } from "react-router-dom";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useEffect, useRef, useState } from "react";
 import { TxnData } from "@/types";
@@ -19,6 +22,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
+
+dayjs.extend(relativeTime);
 
 function NavItems({
   title,
@@ -70,6 +75,8 @@ function MessageTile({
 }) {
   const data = expandTxnData(txnData);
 
+  const date = dayjs(data.timestamp);
+
   return (
     <div className={cn("flex items-center")}>
       <Avatar className="flex h-9 w-9 items-center justify-center space-y-0 border">
@@ -77,7 +84,13 @@ function MessageTile({
         <AvatarFallback>XX</AvatarFallback>
       </Avatar>
       <div className="ml-4 space-y-1">
-        <p className="text-sm font-medium leading-none">{data.username}</p>
+        <p className="text-md font-medium leading-none flex flex-row gap-x-2 items-center">
+          <span>{data.username}</span>
+          <span className="text-muted-foreground"> • </span>
+          <span className="text-muted-foreground text-sm">
+            {date.fromNow()}
+          </span>
+        </p>
         <p className={cn("text-sm text-muted-foreground")}>
           {dataDecrypted ? atob(data.content) : data.content}
         </p>
