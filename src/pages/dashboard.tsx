@@ -3,7 +3,7 @@ import { cn, expandTxnData, getMemData } from "@/lib/utils";
 import { Link, useSearchParams } from "react-router-dom";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-
+import QRCode from "react-qr-code";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useEffect, useRef, useState } from "react";
 import { TxnData } from "@/types";
@@ -87,8 +87,12 @@ function MessageTile({
         <p className="text-md font-medium leading-none flex flex-row gap-x-2 items-center">
           <span>{data.username}</span>
           <span className="text-muted-foreground"> • </span>
-          <span className="text-muted-foreground text-sm">
+          <span className="text-muted-foreground text-sm print:hidden">
             {date.fromNow()}
+          </span>
+
+          <span className="text-muted-foreground text-sm hidden print:block">
+            {date.format("DD/MM/YYYY HH:mm:ss")}
           </span>
         </p>
         <p className={cn("text-sm text-muted-foreground")}>
@@ -193,8 +197,8 @@ function DashboardPage() {
 
   return (
     <Dialog>
-      <div className="flex bg-[#343541] h-screen">
-        <div className="w-[400px] bg-[#000000] h-full">
+      <div className="flex bg-[#343541] h-screen print:h-full">
+        <div className="w-[400px] bg-[#000000] h-full print:hidden">
           <nav className="p-4 h-full flex flex-col">
             <div className="flex flex-col flex-1 gap-2 gap-y-6 overflow-auto">
               <div>
@@ -225,10 +229,11 @@ function DashboardPage() {
             <div>
               <Link to={"/"}>
                 <span className="group flex items-center rounded-md px-3 py-2 gap-4 text-sm font-medium hover:bg-[#202122] hover:text-accent-foreground">
-                  {/* <Icons.dashboard className="mr-2 h-6 w-6" /> */}
-
                   <Avatar className="flex h-8 w-8 items-center justify-center space-y-0 border">
-                    <AvatarImage src="/vite.svg" alt="Avatar" />
+                    <AvatarImage
+                      src="/images/app/discord-logo.svg"
+                      alt="Avatar"
+                    />
                     <AvatarFallback>XX</AvatarFallback>
                   </Avatar>
 
@@ -239,23 +244,25 @@ function DashboardPage() {
           </nav>
         </div>
 
-        <div className="flex flex-col justify-between h-full w-full p-4">
-          <div className="flex flex-row justify-between px-8">
-            <h1 className="text-4xl font-bold">Baldr</h1>
-            <Button>Generate PDF</Button>
-          </div>
+        <div className="flex flex-col justify-between h-full w-full p-4 overflow-auto">
+          <header className="flex flex-row justify-between print:justify-center px-8 print:top-0 print:left-0 print:right-0">
+            <h1 className="text-4xl font-bold print:text-center">Baldr</h1>
+            <Button onClick={() => window.print()} className="print:hidden">
+              Generate PDF
+            </Button>
+          </header>
 
           <div className="relative flex-grow w-3/5 mx-auto mt-16">
             <div
               className={cn(
-                "flex flex-col flex-grow gap-8",
+                "flex flex-col flex-grow gap-8 overflow-auto",
                 privateTxnData?.isPrivate && !dataDecrpyted && "blur-sm"
               )}
             >
               {activeTxnData?.map((txnData, i) => (
                 <MessageTile
                   key={i}
-                  img="/vite.svg"
+                  img="/images/app/discord-logo.svg"
                   txnData={txnData}
                   dataDecrypted={dataDecrpyted}
                 />
@@ -277,21 +284,45 @@ function DashboardPage() {
             )}
           </div>
 
-          <div className="w-3/5 mx-auto pt-8">
-            <p className="h-10 w-full rounded-md border border-muted-foreground bg-transparent px-3 py-2 text-sm ring-offset-background text-muted-foreground">
+          <footer className="w-3/5 mx-auto pt-8 flex flex-col gap-2 max-h-56 print:w-full print:fixed print:bottom-0 print:left-0 print:right-0">
+            <div
+              className={cn(
+                "hidden print:flex flex-row gap-4 items-center w-full",
+                privateTxnData?.isPrivate && "justify-between"
+              )}
+            >
+              <QRCode
+                value={`${window.location.origin}/#/${txId}`}
+                className="max-h-32 max-w-[8rem]"
+              />
+
+              <h2 className="text-5xl font-bold">
+                Proof of <br /> Communicatin
+              </h2>
+
+              {privateTxnData?.isPrivate && (
+                <Icons.lock className="h-28 w-28 print:text-black" />
+              )}
+            </div>
+
+            <div className="min-h-10 w-full rounded-md border border-muted-foreground bg-transparent px-3 py-2 text-sm ring-offset-background text-muted-foreground">
               {txId ? (
-                <Link
-                  to={`https://arweave.net/${txId}`}
-                  className="underline"
-                  target="_blank"
-                >
-                  {txId}
-                </Link>
+                <span>
+                  <span>Transaction ID - </span>
+
+                  <Link
+                    to={`https://arweave.net/${txId}`}
+                    className="underline"
+                    target="_blank"
+                  >
+                    {txId}
+                  </Link>
+                </span>
               ) : (
                 "Transaction ID's block explorer link will appear here"
               )}
-            </p>
-          </div>
+            </div>
+          </footer>
         </div>
       </div>
 
