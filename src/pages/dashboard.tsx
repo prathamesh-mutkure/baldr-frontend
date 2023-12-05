@@ -59,18 +59,28 @@ function NavItems({
   );
 }
 
-function MessageTile({ img, txnData }: { img: string; txnData: TxnData }) {
+function MessageTile({
+  img,
+  txnData,
+  dataDecrypted = false,
+}: {
+  img: string;
+  txnData: TxnData;
+  dataDecrypted: boolean;
+}) {
   const data = expandTxnData(txnData);
 
   return (
-    <div className={cn("flex items-center", data.isPrivate && "blur-sm")}>
+    <div className={cn("flex items-center")}>
       <Avatar className="flex h-9 w-9 items-center justify-center space-y-0 border">
         <AvatarImage src={img} alt="Avatar" />
         <AvatarFallback>XX</AvatarFallback>
       </Avatar>
       <div className="ml-4 space-y-1">
         <p className="text-sm font-medium leading-none">{data.username}</p>
-        <p className={cn("text-sm text-muted-foreground")}>{data.content}</p>
+        <p className={cn("text-sm text-muted-foreground")}>
+          {dataDecrypted ? atob(data.content) : data.content}
+        </p>
       </div>
     </div>
   );
@@ -83,6 +93,7 @@ function DashboardPage() {
   const [txns, setTxns] = useState<string[]>([]);
   const [activeTxn, setActiveTxn] = useState<string | null>(null);
   const [activeTxnData, setActiveTxnData] = useState<TxnData[] | null>(null);
+  const [dataDecrpyted, setDataDecrpyted] = useState(false);
 
   const [privateTxnData, setPrivateTxnData] = useState<{
     isPrivate: boolean;
@@ -131,6 +142,8 @@ function DashboardPage() {
     }
 
     getTnxData(activeTxn);
+    setDataDecrpyted(false);
+    setPrivateTxnData(null);
   }, [activeTxn]);
 
   function handleViewData() {
@@ -145,6 +158,7 @@ function DashboardPage() {
       });
 
       closeBtnRef.current?.click();
+      setDataDecrpyted(true);
     } else {
       toast({
         title: "Failed to decrypt",
@@ -204,15 +218,20 @@ function DashboardPage() {
             <div
               className={cn(
                 "flex flex-col flex-grow gap-8",
-                privateTxnData?.isPrivate && "blur-sm"
+                privateTxnData?.isPrivate && !dataDecrpyted && "blur-sm"
               )}
             >
               {activeTxnData?.map((txnData, i) => (
-                <MessageTile key={i} img="/vite.svg" txnData={txnData} />
+                <MessageTile
+                  key={i}
+                  img="/vite.svg"
+                  txnData={txnData}
+                  dataDecrypted={dataDecrpyted}
+                />
               ))}
             </div>
 
-            {privateTxnData?.isPrivate && (
+            {privateTxnData?.isPrivate && !dataDecrpyted && (
               <DialogTrigger asChild>
                 <Button
                   variant="outline"
