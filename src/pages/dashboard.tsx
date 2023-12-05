@@ -91,7 +91,6 @@ function DashboardPage() {
   const { toast } = useToast();
 
   const [txns, setTxns] = useState<string[]>([]);
-  const [activeTxn, setActiveTxn] = useState<string | null>(null);
   const [activeTxnData, setActiveTxnData] = useState<TxnData[] | null>(null);
   const [dataDecrpyted, setDataDecrpyted] = useState(false);
 
@@ -113,7 +112,12 @@ function DashboardPage() {
       const data = await getMemData();
 
       setTxns(data.tnxs[username]?.reverse() ?? []);
-      setActiveTxn(data.tnxs[username][0] ?? null);
+
+      setParams((oldParams) => {
+        oldParams.set("txId", data.tnxs[username][0] ?? null);
+
+        return new URLSearchParams(oldParams);
+      });
     }
 
     getData();
@@ -140,22 +144,16 @@ function DashboardPage() {
       return data;
     }
 
-    if (!activeTxn) {
+    if (!txId) {
       return;
     }
 
-    setParams((oldParams) => {
-      oldParams.set("txId", activeTxn);
-
-      return new URLSearchParams(oldParams);
-    });
-
-    getTnxData(activeTxn);
+    getTnxData(txId);
     setDataDecrpyted(false);
     setPrivateTxnData(null);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeTxn]);
+  }, [txId]);
 
   function handleViewData() {
     const userKey = keyInputRef.current?.value;
@@ -200,8 +198,14 @@ function DashboardPage() {
                 items={txns.map((txn) => ({
                   title: txn,
                 }))}
-                onClick={setActiveTxn}
-                activeTxn={activeTxn}
+                onClick={(val) => {
+                  setParams((oldParams) => {
+                    oldParams.set("txId", val);
+
+                    return new URLSearchParams(oldParams);
+                  });
+                }}
+                activeTxn={txId}
               />
             </div>
 
@@ -262,13 +266,13 @@ function DashboardPage() {
 
           <div className="w-3/5 mx-auto pt-8">
             <p className="h-10 w-full rounded-md border border-muted-foreground bg-transparent px-3 py-2 text-sm ring-offset-background text-muted-foreground">
-              {activeTxn ? (
+              {txId ? (
                 <Link
-                  to={`https://arweave.net/${activeTxn}`}
+                  to={`https://arweave.net/${txId}`}
                   className="underline"
                   target="_blank"
                 >
-                  {activeTxn}
+                  {txId}
                 </Link>
               ) : (
                 "Transaction ID's block explorer link will appear here"
