@@ -84,8 +84,8 @@ function MessageTile({
         <AvatarFallback>XX</AvatarFallback>
       </Avatar>
       <div className="ml-4 space-y-1">
-        <p className="text-md font-medium leading-none flex flex-row gap-x-2 items-center">
-          <span>{data.username}</span>
+        <p className="text-md font-medium leading-none flex flex-row gap-x-2 items-center print:text-black">
+          <span className="  font-bold">{data.username}</span>
           <span className="text-muted-foreground"> • </span>
           <span className="text-muted-foreground text-sm print:hidden">
             {date.fromNow()}
@@ -95,7 +95,7 @@ function MessageTile({
             {date.format("DD/MM/YYYY HH:mm:ss")}
           </span>
         </p>
-        <p className={cn("text-sm text-muted-foreground")}>
+        <p className={cn("text-sm text-muted-foreground print:text-black")}>
           {dataDecrypted ? atob(data.content) : data.content}
         </p>
       </div>
@@ -246,7 +246,9 @@ function DashboardPage() {
 
         <div className="flex flex-col justify-between h-full w-full p-4 overflow-auto">
           <header className="flex flex-row justify-between print:justify-center px-8 print:top-0 print:left-0 print:right-0">
-            <h1 className="text-4xl font-bold print:text-center">Baldr</h1>
+            <h1 className="text-3xl print:text-black print:text-7xl font-bold print:text-center">
+              Baldr
+            </h1>
             <Button onClick={() => window.print()} className="print:hidden">
               Generate PDF
             </Button>
@@ -296,8 +298,8 @@ function DashboardPage() {
                 className="max-h-32 max-w-[8rem]"
               />
 
-              <h2 className="text-5xl font-bold">
-                Proof of <br /> Communicatin
+              <h2 className="text-5xl font-bold print:text-black">
+                Proof of <br /> Communication
               </h2>
 
               {privateTxnData?.isPrivate && (
@@ -305,7 +307,7 @@ function DashboardPage() {
               )}
             </div>
 
-            <div className="min-h-10 w-full rounded-md border border-muted-foreground bg-transparent px-3 py-2 text-sm ring-offset-background text-muted-foreground">
+            <div className="min-h-10 w-full print:text-black rounded-md border border-muted-foreground bg-transparent px-3 py-2 text-sm ring-offset-background text-muted-foreground">
               {txId ? (
                 <span>
                   <span>Transaction ID - </span>
