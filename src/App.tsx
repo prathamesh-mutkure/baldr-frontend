@@ -5,6 +5,7 @@ import DashboardPage from "./pages/dashboard";
 import DiscordDashboardPage from "./pages/_dashboard";
 import SearchPage from "./pages/search";
 import { Toaster } from "@/components/ui/toaster";
+import TxDetailsPage from "./pages/tx-details";
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
           <Route path={"/dashboard/"} element={<DashboardPage />} />
           <Route path={"/discord/"} element={<DiscordDashboardPage />} />
           <Route path={"/search/"} element={<SearchPage />} />
+          <Route path={"/:txId"} element={<TxDetailsPage />} />
         </Routes>
         <Toaster />
       </HashRouter>
