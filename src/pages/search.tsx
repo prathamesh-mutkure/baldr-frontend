@@ -11,6 +11,18 @@ import {
 } from "@/components/ui/select";
 import { getMemData } from "@/lib/utils";
 
+import {
+  Command,
+  CommandDialog,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+  CommandSeparator,
+  CommandShortcut,
+} from "@/components/ui/command";
+
 function SearchPage() {
   const [usernames, setUsernames] = useState<string[]>([]);
   const [username, setUsername] = useState<string>();
@@ -33,26 +45,33 @@ function SearchPage() {
         <h1 className="text-7xl text-center">Temple of Baldr</h1>
 
         <div className="w-1/2 mx-auto flex flex-col gap-8">
-          <Select value={username} onValueChange={setUsername}>
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="Search Username" />
-            </SelectTrigger>
+          <Command
+            onChange={(e) => {
+              setUsername(e.target.value ?? "");
+            }}
+          >
+            <CommandInput placeholder="Search username" className="" />
+            <CommandList>
+              <CommandGroup>
+                {username &&
+                  usernames.map((item, i) => (
+                    <Link
+                      to={item ? `/dashboard/?username=${item}` : "/dashboard"}
+                      className="w-full"
+                    >
+                      <CommandItem key={i}>{item}</CommandItem>
+                    </Link>
+                  ))}
+              </CommandGroup>
+            </CommandList>
+          </Command>
 
-            <SelectContent className="w-full">
-              {usernames.map((item, i) => (
-                <SelectItem key={i} value={item}>
-                  {item}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-
-          <Link
+          {/* <Link
             to={username ? `/dashboard/?username=${username}` : "/dashboard"}
             className="w-full"
           >
             <Button className="w-full">Continue</Button>
-          </Link>
+          </Link> */}
         </div>
       </div>
     </div>
