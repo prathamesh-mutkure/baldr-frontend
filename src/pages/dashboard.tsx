@@ -204,28 +204,6 @@ function DashboardPage() {
     initializeOthent();
   }, []);
 
-  // useEffect(() => {
-  //   async function getStampData(txId: string | null | undefined) {
-  //     if (!txId) {
-  //       return;
-  //     }
-
-  //     if (!stamps) return;
-
-  //     const { total } = await stamps.count(txId);
-  //     const stamped = await stamps.hasStamped(txId);
-  //     const balance = await stamps.balance(txId);
-
-  //     setStampData({
-  //       hasUserStamped: stamped,
-  //       userBalance: balance,
-  //       stampCount: total,
-  //     });
-  //   }
-
-  //   getStampData(txId);
-  // }, [stamps, txId]);
-
   function handleViewData() {
     const userKey = keyInputRef.current?.value;
 
@@ -421,7 +399,7 @@ function DashboardPage() {
             </div>
           </header>
 
-          <div className="relative flex-grow w-3/5 mx-auto mt-16">
+          <div className="relative flex-grow w-full md:w-3/5 mx-auto mt-16">
             <div
               className={cn(
                 "flex flex-col flex-grow gap-8 overflow-auto",
@@ -453,7 +431,7 @@ function DashboardPage() {
             )}
           </div>
 
-          <footer className="w-3/5 mx-auto pt-8 flex flex-col gap-2 max-h-56 print:w-full print:fixed print:bottom-0 print:left-0 print:right-0">
+          <footer className="w-4/5 md:w-3/5 mr-auto ml-0 md:mx-auto pt-8 flex flex-col gap-2 max-h-56 print:w-full print:fixed print:bottom-0 print:left-0 print:right-0">
             <div
               className={cn(
                 "hidden print:flex flex-row gap-4 items-center w-full",
