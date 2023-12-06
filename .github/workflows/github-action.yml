@@ -1,0 +1,57 @@
+name: Deploy to Arweave
+
+on:
+  push:
+    branches:
+      - main # Trigger the deployment when there's a push to the main branch
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: "18.18.0" # Using Node.js version 18.18.0
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Decode Arweave Wallet File
+        run: echo '${{ secrets.ARWEAVE_WALLET_ENCODED }}' | base64 -d > wallet.json
+
+      - name: Deploy to Arweave
+        run: echo CONFIRM | npm run deploy | tee deploy_output.txt
+
+      - name: Set Execute Permission for Script
+        run: chmod +x ./update_readme.sh
+
+      - name: Update GitHub Repository Website Field
+        env:
+          TOKEN: ${{ secrets.TOKEN }} # or use the default GITHUB_TOKEN provided by GitHub Actions
+        run: ./update_readme.sh
+
+      # - name: Set up SSH
+      #   env:
+      #     SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+      #   run: |
+      #     mkdir -p ~/.ssh
+      #     echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+      #     chmod 600 ~/.ssh/id_rsa
+      #     ssh-keyscan github.com >> ~/.ssh/known_hosts
+      #     chmod 644 ~/.ssh/known_hosts
+
+      # - name: Configure Git
+      #   run: |
+      #     git config --local user.email "symaticvisuals02@gmail.com"
+      #     git config --local user.name "DeepanshuGoel-Action"
+
+      # - name: Commit and Push Updated README via SSH
+      #   run: |
+      #     git add .
+      #     git commit -m "Update README with Arweave deployment link"
+      #     git push git@github.com:symaticvisuals/eternal-ensemble.git main

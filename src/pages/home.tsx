@@ -62,7 +62,7 @@ function HomePage() {
         <div className="w-1/2 h-screen bg-white overflow-scroll">
           <div className="h-screen flex flex-col overflow-hidden">
             <div className="p-8">
-              <h1 className="text-6xl">Discord Disputes</h1>
+              <h1 className="text-6xl text-black">Discord Disputes</h1>
             </div>
 
             <div className="w-full">

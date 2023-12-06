@@ -116,6 +116,8 @@ function DashboardPage() {
   const [activeTxnData, setActiveTxnData] = useState<TxnData[] | null>(null);
   const [dataDecrpyted, setDataDecrpyted] = useState(false);
 
+  const [isStamping, setIsStamping] = useState(false);
+
   const [stampData, setStampData] = useState<{
     stampCount: number;
     hasUserStamped: boolean;
@@ -273,46 +275,56 @@ function DashboardPage() {
 
     if (!othent) return;
 
-    const signedWarpTransaction = await othent.signTransactionWarp({
-      othentFunction: "sendTransaction",
-      data: {
-        toContractId: STAMP,
-        toContractFunction: "stamp",
-        txnData: {
-          transactionId: txId,
-          timestamp: Date.now(),
-        },
-      },
-      tags: [
-        {
-          name: "Content-Type",
-          value: "text/plain",
-        },
-        {
-          name: "Data-Source",
-          value: txId!,
-        },
-        { name: "Protocol-Name", value: "Stamp" },
-      ],
-    });
+    setIsStamping(true);
 
-    await othent.sendTransactionWarp({
-      JWT: signedWarpTransaction.JWT,
-      testNet: false,
-      tags: [
-        {
-          name: "Content-Type",
-          value: "text/plain",
+    try {
+      const signedWarpTransaction = await othent.signTransactionWarp({
+        othentFunction: "sendTransaction",
+        data: {
+          toContractId: STAMP,
+          toContractFunction: "stamp",
+          txnData: {
+            transactionId: txId,
+            timestamp: Date.now(),
+          },
         },
-        {
-          name: "Data-Source",
-          value: txId!,
-        },
-        { name: "Protocol-Name", value: "Stamp" },
-      ],
-    });
+        tags: [
+          {
+            name: "Content-Type",
+            value: "text/plain",
+          },
+          {
+            name: "Data-Source",
+            value: txId!,
+          },
+          { name: "Protocol-Name", value: "Stamp" },
+        ],
+      });
 
-    getData();
+      await othent.sendTransactionWarp({
+        JWT: signedWarpTransaction.JWT,
+        testNet: false,
+        tags: [
+          {
+            name: "Content-Type",
+            value: "text/plain",
+          },
+          {
+            name: "Data-Source",
+            value: txId!,
+          },
+          { name: "Protocol-Name", value: "Stamp" },
+        ],
+      });
+
+      getData();
+    } catch (e) {
+      toast({
+        title: "Failed to stamp",
+      });
+    } finally {
+      setIsStamping(false);
+    }
   }
 
   return (
@@ -362,10 +374,14 @@ function DashboardPage() {
                   </span>
                 </div>
 
+                {/* <Button> */}
                 <OthentLogin
                   location={ModalLocation["top"]}
                   apiid={import.meta.env.VITE_OTHENT_API!}
-                />
+                  className="w-10"
+                >
+                  {/* <Button>Login</Button> */}
+                </OthentLogin>
               </div>
             </div>
           </nav>
@@ -478,10 +494,15 @@ function DashboardPage() {
           onClick={async () => {
             handleStamp();
           }}
+          disabled={isStamping}
         >
           <span>{stampData?.stampCount}</span>
 
-          <Icons.stamp className="h-4 w-4 ml-4" />
+          {isStamping ? (
+            <Icons.spinner className="h-4 w-4 ml-4" />
+          ) : (
+            <Icons.stamp className="h-4 w-4 ml-4" />
+          )}
         </Button>
       </div>
 
