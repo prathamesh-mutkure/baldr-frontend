@@ -1,26 +1,14 @@
-import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { getMemData } from "@/lib/utils";
 
 import {
   Command,
-  CommandDialog,
-  CommandEmpty,
   CommandGroup,
   CommandInput,
   CommandItem,
   CommandList,
-  CommandSeparator,
-  CommandShortcut,
 } from "@/components/ui/command";
 
 function SearchPage() {
@@ -47,6 +35,7 @@ function SearchPage() {
         <div className="w-1/2 mx-auto">
           <Command
             onChange={(e) => {
+              // @ts-ignore
               setUsername(e.target.value ?? "");
             }}
             className=""

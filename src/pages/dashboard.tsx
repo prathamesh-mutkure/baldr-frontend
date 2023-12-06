@@ -318,7 +318,7 @@ function DashboardPage() {
       ],
     });
 
-    const x = await othent.sendTransactionWarp({
+    await othent.sendTransactionWarp({
       JWT: signedWarpTransaction.JWT,
       testNet: false,
       tags: [
