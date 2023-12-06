@@ -82,15 +82,20 @@ function MessageTile({
 
   const date = dayjs(data.timestamp);
 
+  const displayText = dataDecrypted ? atob(data.content) : data.content;
+
+  const md = displayText.split("[!image]");
+
   return (
-    <div className={cn("flex items-center")}>
-      <Avatar className="flex h-9 w-9 items-center justify-center space-y-0 border">
+    <div className={cn("flex items-start")}>
+      <Avatar className="flex h-9 w-9 items-start ustify-center space-y-0 border">
         <AvatarImage src={img} alt="Avatar" />
         <AvatarFallback>XX</AvatarFallback>
       </Avatar>
-      <div className="ml-4 space-y-1">
+
+      <div className="ml-4 space-y-1 flex-grow">
         <p className="text-md font-medium leading-none flex flex-row gap-x-2 items-center print:text-black">
-          <span className="  font-bold">{data.username}</span>
+          <span className="font-bold">{data.username}</span>
           <span className="text-muted-foreground"> • </span>
           <span className="text-muted-foreground text-sm print:hidden">
             {date.fromNow()}
@@ -100,9 +105,16 @@ function MessageTile({
             {date.format("DD/MM/YYYY HH:mm:ss")}
           </span>
         </p>
+
         <p className={cn("text-sm text-muted-foreground print:text-black")}>
-          {dataDecrypted ? atob(data.content) : data.content}
+          {md[0]}
         </p>
+
+        {md.length > 1 && (
+          <div className="max-w-[200px] h-auto mx-auto pt-4">
+            <img src={md[1]} />
+          </div>
+        )}
       </div>
     </div>
   );
