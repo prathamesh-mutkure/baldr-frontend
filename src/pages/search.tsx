@@ -41,16 +41,17 @@ function SearchPage() {
     <div className="h-screen w-screen flex items-center flex-col py-12">
       <img src="/vite.svg" className="h-10 w-10 rounded-xl" />
 
-      <div className="flex flex-col gap-16 w-[800px] flex-grow justify-center">
+      <div className="flex flex-col gap-16 w-[800px] flex-grow justify-start pt-[10%]">
         <h1 className="text-7xl text-center">Temple of Baldr</h1>
 
-        <div className="w-1/2 mx-auto flex flex-col gap-8">
+        <div className="w-1/2 mx-auto">
           <Command
             onChange={(e) => {
               setUsername(e.target.value ?? "");
             }}
+            className=""
           >
-            <CommandInput placeholder="Search username" className="" />
+            <CommandInput placeholder="Search username" />
             <CommandList>
               <CommandGroup>
                 {username &&

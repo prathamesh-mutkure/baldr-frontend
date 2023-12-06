@@ -340,8 +340,8 @@ function DashboardPage() {
   return (
     <Dialog>
       <div className="flex bg-[#343541] h-screen print:h-full">
-        <div className="w-[400px] bg-[#000000] h-full print:hidden">
-          <nav className="p-4 h-full flex flex-col">
+        <div className="w-[400px] bg-[#000000] h-full print:hidden hidden md:block">
+          <nav className="p-4 h-full flex flex-col ">
             <div className="flex flex-col flex-1 gap-2 gap-y-6 overflow-auto">
               <div>
                 <Link to={"/search"}>
