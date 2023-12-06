@@ -24,3 +24,6 @@ dist-ssr
 *.sw?
 
 .env
+wallet.json
+dist-errors.txt
+dist-manifest.csv
