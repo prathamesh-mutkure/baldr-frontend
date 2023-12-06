@@ -24,6 +24,9 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
 
 import { OthentLogin, ModalLocation } from "@othent/react-components";
+import { Othent, useOthentReturnProps } from "othent";
+
+import { queryGQL } from "arweavekit/graphql";
 
 dayjs.extend(relativeTime);
 
@@ -113,6 +116,16 @@ function DashboardPage() {
   const [activeTxnData, setActiveTxnData] = useState<TxnData[] | null>(null);
   const [dataDecrpyted, setDataDecrpyted] = useState(false);
 
+  const [stampData, setStampData] = useState<{
+    stampCount: number;
+    hasUserStamped: boolean;
+    userBalance?: number;
+  } | null>({
+    stampCount: 0,
+    hasUserStamped: false,
+    userBalance: 0,
+  });
+
   const [privateTxnData, setPrivateTxnData] = useState<{
     isPrivate: boolean;
     key: string | null;
@@ -123,6 +136,8 @@ function DashboardPage() {
 
   const username = params.get("username");
   const txId = params.get("txId");
+
+  const [othent, setOthent] = useState<useOthentReturnProps | null>(null);
 
   useEffect(() => {
     async function getData() {
@@ -168,11 +183,48 @@ function DashboardPage() {
     }
 
     getTnxData(txId);
+    getData();
     setDataDecrpyted(false);
     setPrivateTxnData(null);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [txId]);
+
+  useEffect(() => {
+    const initializeOthent = async () => {
+      const othentInstance = await Othent({
+        API_ID: import.meta.env.VITE_OTHENT_API!,
+      });
+
+      console.log("INIT");
+
+      setOthent(othentInstance);
+    };
+
+    initializeOthent();
+  }, []);
+
+  // useEffect(() => {
+  //   async function getStampData(txId: string | null | undefined) {
+  //     if (!txId) {
+  //       return;
+  //     }
+
+  //     if (!stamps) return;
+
+  //     const { total } = await stamps.count(txId);
+  //     const stamped = await stamps.hasStamped(txId);
+  //     const balance = await stamps.balance(txId);
+
+  //     setStampData({
+  //       hasUserStamped: stamped,
+  //       userBalance: balance,
+  //       stampCount: total,
+  //     });
+  //   }
+
+  //   getStampData(txId);
+  // }, [stamps, txId]);
 
   function handleViewData() {
     const userKey = keyInputRef.current?.value;
@@ -195,6 +247,94 @@ function DashboardPage() {
         variant: "destructive",
       });
     }
+  }
+
+  async function getData() {
+    const response = await queryGQL(
+      `
+      query getStamp($ids: [String!]!){
+        transactions(first: 100, tags: [
+          { name: "Protocol-Name", values: ["Stamp"] },
+          { name: "Data-Source", values: $ids }
+        ]) {
+          edges {
+            node {
+              id 
+              owner {
+                address
+              }
+              tags {
+                name
+                value
+              }
+              block {
+                height
+              }
+            }
+          }
+        }
+      }
+      `,
+      {
+        filters: {
+          ids: [txId],
+        },
+        gateway: "arweave.net",
+      }
+    );
+
+    setStampData({
+      hasUserStamped: true,
+      stampCount: response.data?.transactions.edges.length ?? 0,
+      userBalance: 0,
+    });
+  }
+
+  async function handleStamp() {
+    const STAMP = "FMRHYgSijiUNBrFy-XqyNNXenHsCV0ThR4lGAPO4chA";
+
+    if (!othent) return;
+
+    const signedWarpTransaction = await othent.signTransactionWarp({
+      othentFunction: "sendTransaction",
+      data: {
+        toContractId: STAMP,
+        toContractFunction: "stamp",
+        txnData: {
+          transactionId: txId,
+          timestamp: Date.now(),
+        },
+      },
+      tags: [
+        {
+          name: "Content-Type",
+          value: "text/plain",
+        },
+        {
+          name: "Data-Source",
+          value: txId!,
+        },
+        { name: "Protocol-Name", value: "Stamp" },
+      ],
+    });
+
+    const x = await othent.sendTransactionWarp({
+      JWT: signedWarpTransaction.JWT,
+      testNet: false,
+      tags: [
+        {
+          name: "Content-Type",
+          value: "text/plain",
+        },
+        {
+          name: "Data-Source",
+          value: txId!,
+        },
+        { name: "Protocol-Name", value: "Stamp" },
+      ],
+    });
+
+    getData();
   }
 
   return (
@@ -229,8 +369,8 @@ function DashboardPage() {
             </div>
 
             <div>
-              <Link to={"/"}>
-                <span className="group flex items-center rounded-md px-3 py-2 gap-4 text-sm font-medium hover:bg-[#202122] hover:text-accent-foreground">
+              <div className="flex flex-row justify-between items-center">
+                <div className="group flex items-center rounded-md px-3 py-2 gap-4 text-sm font-medium hover:bg-[#202122] hover:text-accent-foreground">
                   <Avatar className="flex h-8 w-8 items-center justify-center space-y-0 border">
                     <AvatarImage
                       src="/images/app/discord-logo.svg"
@@ -242,8 +382,13 @@ function DashboardPage() {
                   <span className="font-bold text-xl text-lime-400">
                     {username}
                   </span>
-                </span>
-              </Link>
+                </div>
+
+                <OthentLogin
+                  location={ModalLocation["top"]}
+                  apiid={import.meta.env.VITE_OTHENT_API!}
+                />
+              </div>
             </div>
           </nav>
         </div>
@@ -273,11 +418,6 @@ function DashboardPage() {
               >
                 Generate PDF
               </Button>
-
-              <OthentLogin
-                location={ModalLocation["top-left"]}
-                apiid="YOUR_API_ID"
-              />
             </div>
           </header>
 
@@ -353,6 +493,18 @@ function DashboardPage() {
             </div>
           </footer>
         </div>
+      </div>
+
+      <div className="fixed right-8 bottom-8">
+        <Button
+          onClick={async () => {
+            handleStamp();
+          }}
+        >
+          <span>{stampData?.stampCount}</span>
+
+          <Icons.stamp className="h-4 w-4 ml-4" />
+        </Button>
       </div>
 
       <DialogContent className="sm:max-w-[425px]">

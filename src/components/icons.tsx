@@ -37,12 +37,14 @@ import {
   FileImage,
   ArrowLeft,
   LucideLockKeyhole,
+  StampIcon,
   type XIcon as LucideIcon,
 } from "lucide-react";
 
 export type Icon = typeof LucideIcon;
 
 export const Icons = {
+  stamp: StampIcon,
   logo: Command,
   close: X,
   spinner: Loader2,
