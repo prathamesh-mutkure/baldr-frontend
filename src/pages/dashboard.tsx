@@ -23,6 +23,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
 
+import { OthentLogin, ModalLocation } from "@othent/react-components";
+
 dayjs.extend(relativeTime);
 
 function NavItems({
@@ -251,25 +253,32 @@ function DashboardPage() {
             <h1 className="text-3xl print:text-black print:text-7xl font-bold print:text-center">
               Baldr
             </h1>
-            <Button
-              onClick={() => {
-                if (privateTxnData?.isPrivate && !dataDecrpyted) {
-                  toast({
-                    variant: "destructive",
-                    type: "background",
-                    title: "Data not decrypted",
-                    description: "Please unlock data before printing it",
-                  });
+            <div>
+              <Button
+                onClick={() => {
+                  if (privateTxnData?.isPrivate && !dataDecrpyted) {
+                    toast({
+                      variant: "destructive",
+                      type: "background",
+                      title: "Data not decrypted",
+                      description: "Please unlock data before printing it",
+                    });
 
-                  return;
-                }
+                    return;
+                  }
 
-                window.print();
-              }}
-              className="print:hidden"
-            >
-              Generate PDF
-            </Button>
+                  window.print();
+                }}
+                className="print:hidden"
+              >
+                Generate PDF
+              </Button>
+
+              <OthentLogin
+                location={ModalLocation["top-left"]}
+                apiid="YOUR_API_ID"
+              />
+            </div>
           </header>
 
           <div className="relative flex-grow w-3/5 mx-auto mt-16">
