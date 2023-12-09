@@ -21,7 +21,7 @@ function HomePage() {
             </div>
 
             <div className="overflow-clip">
-              <h1 className="text-[380px] leading-[380px] text-center font-heading">
+              <h1 className="text-[340px] leading-[340px] text-center font-heading">
                 BALDR
               </h1>
             </div>
