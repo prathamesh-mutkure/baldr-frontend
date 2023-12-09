@@ -28,16 +28,17 @@ function HomePage() {
           </div>
 
           <div className="flex flex-col gap-5">
-            {[
-              "Discord Disputes",
-              "Telegram Disputes",
-              "Discourse Disputes",
-              "Other",
-            ].map((item) => (
-              <Link to="#">
-                <div className="text-white font-light text-2xl">{item}</div>
-              </Link>
-            ))}
+            Baldr is a suite of applications which leverage permanent storage by arweave, to bring the quality of immutability to discord communities. Baldr has three elements in its build design.
+{/*             {[ */}
+              // "Discord Disputes",
+              // "Telegram Disputes",
+              // "Discourse Disputes",
+              // "Other",
+{/*             ].map((item) => ( */}
+{/*               <Link to="#"> */}
+                // <div className="text-white font-light text-2xl">{item}</div>
+              // </Link>
+            // ))}
           </div>
 
           <div className="flex flex-row justify-between text-white text-lg font-light">
